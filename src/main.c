@@ -1,59 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 
-extern void saxpy(size_t n, float alpha, const float x[n], float y[restrict n]);
+float* x;
+float* y;
 
-#define MAX_SIZE 20
-float x[MAX_SIZE];
-float y[MAX_SIZE];
-
-// Helper function to fill arrays with random values
 void fill_array(float* array, size_t n) {
     for (size_t i = 0; i < n; i++) {
-        array[i] = (float)(rand() % 100 - 50) / 10.0f; // Random floats in range [-5.0, 5.0]
+        array[i] = (float)(rand() % 100 - 50) / 10.0f;
     }
 }
 
-// Helper function to print arrays
 void print_array(const char* name, const float* array, size_t n) {
     printf("%s: ", name);
-    for (size_t i = 0; i < n; i++) {
+    for (size_t i = 0; i < (n > 10 ? 10 : n); i++) {
         printf("%.2f ", array[i]);
     }
+    if (n > 10) printf("...");
     printf("\n");
 }
 
-// Declaration of the `saxpy` assembly function
-// void saxpy(size_t n, float alpha, const float x[n], float y[n]);
 extern void saxpy(size_t n, float alpha, const float* x, float* y);
 
 int main(int argc, char** argv) {
-    size_t n = 10; // Default number of elements
-    float alpha = 2.5f; // Scaling factor for SAXPY
+    size_t n = 1000000; // Default size
+    float alpha = 2.5f;
 
-    // Adjust size via command-line argument
     if (argc > 1) {
         n = strtoul(argv[1], NULL, 0);
-        if (n > MAX_SIZE) n = MAX_SIZE; // Limit to MAX_SIZE
     }
 
-    // Seed random number generator and fill test arrays
+    x = malloc(n * sizeof(float));
+    y = malloc(n * sizeof(float));
+    if (!x || !y) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
     srand((unsigned int)time(NULL));
     fill_array(x, n);
     fill_array(y, n);
 
-    // Print initial values
-    printf("Initial arrays:\n");
+    printf("Initial arrays (first 10 elements):\n");
     print_array("x", x, n);
     print_array("y", y, n);
 
-    // Call the SAXPY function
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
     saxpy(n, alpha, x, y);
+    gettimeofday(&end, NULL);
 
-    // Print results
     printf("\nAfter SAXPY (y = %.2f * x + y):\n", alpha);
     print_array("y", y, n);
 
+    long elapsed_time = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec - start.tv_usec);
+    printf("\nExecution time: %ld microseconds (%.3f milliseconds)\n", elapsed_time, elapsed_time / 1000.0);
+
+    free(x);
+    free(y);
     return EXIT_SUCCESS;
 }
