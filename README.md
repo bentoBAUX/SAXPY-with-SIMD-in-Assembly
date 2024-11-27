@@ -1,6 +1,6 @@
 # SAXPY with SIMD in Assembly
 
-This repository contains an implementation of the **SAXPY** operation (`y = alpha * x + y`) in assembly using SIMD (Single Instruction, Multiple Data) for efficient vector processing.
+This repository contains an implementation of the SAXPY operation (y = alpha * x + y) in assembly using SIMD (Single Instruction, Multiple Data) for efficient vector processing. The implementation processes **4 elements at a time** using SIMD instructions for enhanced performance and handles any remaining elements with scalar operations.
 
 A Makefile is provided to simplify building and running the project. Additionally, a test program written in C is included to verify the correctness of the implementation and benchmark its performance.
 
@@ -15,15 +15,6 @@ $$
 Where:
 - $\mathbf{x}$ and $\mathbf{y}$ are vectors of dimension $n$,
 - $\alpha$ is a scalar multiplier.
-
-## Features
-- **SAXPY Implementation**:
-  - Optimised for performance using SIMD instructions.
-  - Handles scalar remainders when vector size isn't divisible by the SIMD width (in this case 4).
-- **Test Program**:
-  - Generates random input arrays for testing.
-  - Allows specifying vector size via command-line arguments.
-  - Measures execution time for benchmarking.
 
 ## How to Build and Run
 
