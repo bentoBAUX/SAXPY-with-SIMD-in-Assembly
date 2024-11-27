@@ -12,7 +12,7 @@ void fill_array(float* array, size_t n) {
 }
 
 void print_array(const char* name, const float* array, size_t n) {
-    printf("%s: ", name);
+    printf("  %s: ", name);
     for (size_t i = 0; i < (n > 10 ? 10 : n); i++) {
         printf("%.2f ", array[i]);
     }
