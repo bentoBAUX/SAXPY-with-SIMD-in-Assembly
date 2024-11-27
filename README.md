@@ -32,7 +32,7 @@ Where:
 - Make utility installed on your system.
 
 ### Build and Run
-To build the program:
+Example output:
 ```bash
 > make
 > ./main
